@@ -12,8 +12,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 if __name__ == "__main__":
     df = pd.read_excel("responsiva-refr.xlsx", header=0)
 
-    # print(f"Excel table shape: {df.shape}")
-    # print(f"Table head: \n{df.head()} \n\nTable tail: \n{df.tail()}")
+    print(f"Excel table shape: {df.shape}")
+    print(f"Table head: \n{df.head()} \n\nTable tail: \n{df.tail()}")
 
     # Load environment variables from .env file
     load_dotenv()
@@ -35,64 +35,91 @@ if __name__ == "__main__":
 
     # Start the Firefox browser
     try:
-        browser = webdriver.Firefox(service=firefox_service, options=firefox_options)
-        browser.get(os.getenv("WEB_URL"))
+        # browser = webdriver.Firefox(service=firefox_service, options=firefox_options)
+        # browser.get(os.getenv("WEB_URL"))
 
-        # PREVENTA
-        checkbox_preventa = WebDriverWait(browser, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//label[.//span[text()='207']]"))
-        )
-        checkbox_preventa.click()
+        # # PREVENTA
+        # checkbox_preventa = WebDriverWait(browser, 10).until(
+        #     EC.element_to_be_clickable((By.XPATH, "//label[.//span[text()='207']]"))
+        # )
+        # checkbox_preventa.click()
 
-        if 'N2RpBe' in checkbox_preventa.get_attribute('class'):
-            print("✅ Checkbox selected successfully!")
-        else:
-            print("❌ Checkbox not selected.")
+        # if 'N2RpBe' in checkbox_preventa.get_attribute('class'):
+        #     print("✅ Checkbox selected successfully!")
+        # else:
+        #     print("❌ Checkbox not selected.")
 
-        # SERIE
-        textarea_serie = WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//textarea[@class='KHxj8b tL9Q4c']"))
-        )
-        textarea_serie.clear()
-        textarea_serie.send_keys("TEST SERIE")
+        # # SERIE
+        # textarea_serie = WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//textarea[@class='KHxj8b tL9Q4c']"))
+        # )
+        # textarea_serie.clear()
+        # textarea_serie.send_keys("TEST SERIE")
 
-        # ACTIVO
-        input_activo = WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf']"))
-        )
-        input_activo.clear()
-        input_activo.send_keys("TEST ACTIVO")
+        # # ACTIVO
+        # input_activo = WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf']"))
+        # )
+        # input_activo.clear()
+        # input_activo.send_keys("TEST ACTIVO")
 
-        # MODELO
-        input_modelo = WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf' and @aria-labelledby='i46 i49']"))
-        )
-        input_modelo.clear()
-        input_modelo.send_keys("TEST MODELO")
+        # # MODELO
+        # input_modelo = WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf' and @aria-labelledby='i46 i49']"))
+        # )
+        # input_modelo.clear()
+        # input_modelo.send_keys("TEST MODELO")
 
-        # CLIENTE
-        span_cliente = WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'CLIENTE')]"))
-        )
-        input_cliente = browser.find_element(By.XPATH, "//span[contains(text(), 'CLIENTE')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
-        input_cliente.clear()
-        input_cliente.send_keys("TEST CLIENTE")
+        # # CLIENTE
+        # span_cliente = WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'CLIENTE')]"))
+        # )
+        # input_cliente = browser.find_element(By.XPATH, "//span[contains(text(), 'CLIENTE')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
+        # input_cliente.clear()
+        # input_cliente.send_keys("TEST CLIENTE")
 
-        # SAP
-        span_sap = WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'SAP')]"))
-        )
-        input_sap = browser.find_element(By.XPATH, "//span[contains(text(), 'SAP')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
-        input_sap.clear()
-        input_sap.send_keys("TEST SAP")
+        # # SAP
+        # span_sap = WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'SAP')]"))
+        # )
+        # input_sap = browser.find_element(By.XPATH, "//span[contains(text(), 'SAP')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
+        # input_sap.clear()
+        # input_sap.send_keys("TEST SAP")
 
-        # DIRECCIÓN
-        span_direccion = WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]"))
-        )
-        input_direccion = browser.find_element(By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
-        input_direccion.clear()
-        input_direccion.send_keys("TEST DIRECCIÓN")
+        # # DIRECCIÓN
+        # span_direccion = WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]"))
+        # )
+        # input_direccion = browser.find_element(By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
+        # input_direccion.clear()
+        # input_direccion.send_keys("TEST DIRECCIÓN")
+
+        # button_enviar = WebDriverWait(browser, 15).until(
+        #     EC.element_to_be_clickable((By.XPATH, "//div[@role='button' and @aria-label='Submit']"))
+        # )
+
+        # button_enviar.click()
+
+        # Create a new DataFrame from row 15 onwards
+        new_df = df.iloc[14:].drop(columns=["PREVENTA"]).reset_index(drop=False)
+
+        # print(f"\n\nNew DataFrame shape: {new_df.shape}")
+        print(f"\nNew DataFrame head: \n{new_df.head(3)}")
+
+        def extract_element_data(row):
+            serie = row["SERIE"]
+            activo = row["ACTIVO"]
+            modelo = row["MODELO"]
+            cliente = row["CLIENTE"]
+            sap = row["SAP"]
+            direccion = row["DIRECCIÓN"]
+
+            return serie, activo, modelo, cliente, sap, direccion
+
+        # Extract data from each row
+        for index, row in new_df.head(10).iterrows():
+            serie, activo, modelo, cliente, sap, direccion = extract_element_data(row)
+            print(f"\n\nRow {index + 14} data: \nSerie: {serie}\nActivo: {activo}\nModelo: {modelo}\nCliente: {cliente}\nSAP: {sap}\nDirección: {direccion}")
 
     except Exception as e:
         print(f"An error occurred: {e}")
