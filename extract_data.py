@@ -2,15 +2,18 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 if __name__ == "__main__":
     df = pd.read_excel("responsiva-refr.xlsx", header=0)
 
-    print(f"Excel table shape: {df.shape}")
-    print(f"Table head: \n{df.head()} \n\nTable tail: \n{df.tail()}")
+    # print(f"Excel table shape: {df.shape}")
+    # print(f"Table head: \n{df.head()} \n\nTable tail: \n{df.tail()}")
 
     # Load environment variables from .env file
     load_dotenv()
@@ -34,6 +37,18 @@ if __name__ == "__main__":
     try:
         browser = webdriver.Firefox(service=firefox_service, options=firefox_options)
         browser.get(os.getenv("WEB_URL"))
+
+        # Wait until the checkbox is available
+        checkbox_label = WebDriverWait(browser, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//label[.//span[text()='207']]"))
+        )
+        checkbox_label.click()
+
+        if 'N2RpBe' in checkbox_label.get_attribute('class'):
+            print("✅ Checkbox selected successfully!")
+        else:
+            print("❌ Checkbox not selected.")
+
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
