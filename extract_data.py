@@ -12,23 +12,23 @@ if __name__ == "__main__":
     print(f"Excel table shape: {df.shape}")
     print(f"Table head: \n{df.head()} \n\nTable tail: \n{df.tail()}")
 
-    # Configure the user agent
     # Load environment variables from .env file
     load_dotenv()
 
-    # Get the user agent from the environment variables
+    # Get environment variables
     user_agent = os.getenv("USER_AGENT")
-
-    # Specify the path to the geckodriver
     firefox_driver_path = "/usr/local/bin/geckodriver"
-    firefox_service = Service(executable_path=firefox_driver_path)
+    firefox_profile_path = os.getenv("FIREFOX_PROFILE_PATH")
+    firefox_binary_path = os.getenv("FIREFOX_BINARY_PATH")
 
     # Configure Firefox options
     firefox_options = Options()
     firefox_options.set_preference("general.useragent.override", user_agent)
+    firefox_options.binary_location = firefox_binary_path
+    firefox_options.profile = firefox_profile_path
 
-    # Specify the path to the Firefox binary
-    firefox_options.binary_location = os.getenv("FIREFOX_BINARY_PATH")
+    # Specify the path to the geckodriver
+    firefox_service = Service(executable_path=firefox_driver_path)
 
     # Start the Firefox browser
     try:
