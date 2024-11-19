@@ -38,16 +38,61 @@ if __name__ == "__main__":
         browser = webdriver.Firefox(service=firefox_service, options=firefox_options)
         browser.get(os.getenv("WEB_URL"))
 
-        # Wait until the checkbox is available
-        checkbox_label = WebDriverWait(browser, 10).until(
+        # PREVENTA
+        checkbox_preventa = WebDriverWait(browser, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//label[.//span[text()='207']]"))
         )
-        checkbox_label.click()
+        checkbox_preventa.click()
 
-        if 'N2RpBe' in checkbox_label.get_attribute('class'):
+        if 'N2RpBe' in checkbox_preventa.get_attribute('class'):
             print("✅ Checkbox selected successfully!")
         else:
             print("❌ Checkbox not selected.")
+
+        # SERIE
+        textarea_serie = WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//textarea[@class='KHxj8b tL9Q4c']"))
+        )
+        textarea_serie.clear()
+        textarea_serie.send_keys("TEST SERIE")
+
+        # ACTIVO
+        input_activo = WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf']"))
+        )
+        input_activo.clear()
+        input_activo.send_keys("TEST ACTIVO")
+
+        # MODELO
+        input_modelo = WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf' and @aria-labelledby='i46 i49']"))
+        )
+        input_modelo.clear()
+        input_modelo.send_keys("TEST MODELO")
+
+        # CLIENTE
+        span_cliente = WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'CLIENTE')]"))
+        )
+        input_cliente = browser.find_element(By.XPATH, "//span[contains(text(), 'CLIENTE')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
+        input_cliente.clear()
+        input_cliente.send_keys("TEST CLIENTE")
+
+        # SAP
+        span_sap = WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'SAP')]"))
+        )
+        input_sap = browser.find_element(By.XPATH, "//span[contains(text(), 'SAP')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
+        input_sap.clear()
+        input_sap.send_keys("TEST SAP")
+
+        # DIRECCIÓN
+        span_direccion = WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]"))
+        )
+        input_direccion = browser.find_element(By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
+        input_direccion.clear()
+        input_direccion.send_keys("TEST DIRECCIÓN")
 
     except Exception as e:
         print(f"An error occurred: {e}")
