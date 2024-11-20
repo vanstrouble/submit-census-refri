@@ -7,16 +7,32 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+import time
+
+
+def extract_element_data(row):
+    serie = row["SERIE"]
+    activo = row["ACTIVO"]
+    modelo = row["MODELO"]
+    cliente = row["CLIENTE"]
+    sap = row["SAP"]
+    direccion = row["DIRECCIÓN"]
+
+    return serie, activo, modelo, cliente, sap, direccion
 
 
 if __name__ == "__main__":
-    df = pd.read_excel("responsiva-refr.xlsx", header=0)
-
-    print(f"Excel table shape: {df.shape}")
-    print(f"Table head: \n{df.head()} \n\nTable tail: \n{df.tail()}")
-
     # Load environment variables from .env file
     load_dotenv()
+
+    # Read the Excel file and create a DataFrame for fail elements
+    df = pd.read_excel(os.getenv("DATA_PATH"), header=0)
+    fail_elements = pd.DataFrame(
+        columns=["Serie", "Activo", "Modelo", "Cliente", "SAP", "Dirección"]
+    )
+
+    # print(f"Excel table shape: {df.shape}")
+    # print(f"Table head: \n{df.head(3)} \n\nTable tail: \n{df.tail(3)}")
 
     # Get environment variables
     user_agent = os.getenv("USER_AGENT")
@@ -94,29 +110,29 @@ if __name__ == "__main__":
         # input_direccion.clear()
         # input_direccion.send_keys("TEST DIRECCIÓN")
 
+        # # Enviar formulario
         # button_enviar = WebDriverWait(browser, 15).until(
         #     EC.element_to_be_clickable((By.XPATH, "//div[@role='button' and @aria-label='Submit']"))
         # )
-
         # button_enviar.click()
 
         # Verifica que se haya cargado la página de confirmación
-        WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Se registró tu respuesta.')]"))
-        )
+        # WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Se registró tu respuesta.')]"))
+        # )
 
-        # Verifica la presencia del enlace "Enviar otra respuesta"
-        enlace_enviar_otra_respuesta = WebDriverWait(browser, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//a[contains(text(), 'Enviar otra respuesta')]"))
-        )
+        # # Verifica la presencia del enlace "Enviar otra respuesta"
+        # enlace_enviar_otra_respuesta = WebDriverWait(browser, 15).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//a[contains(text(), 'Enviar otra respuesta')]"))
+        # )
 
-        # Si ambos elementos están presentes, imprime un mensaje de éxito
-        if enlace_enviar_otra_respuesta:
-            formulario_enviado_count += 1  # Incrementa el contador
-            print(f"Formulario enviado exitosamente. Total de formularios enviados: {formulario_enviado_count}")
+        # # Si ambos elementos están presentes, imprime un mensaje de éxito
+        # if enlace_enviar_otra_respuesta:
+        #     formulario_enviado_count += 1  # Incrementa el contador
+        #     print(f"Formulario enviado exitosamente. Total de formularios enviados: {formulario_enviado_count}")
 
-            # Haz clic en el enlace para enviar otra respuesta
-            enlace_enviar_otra_respuesta.click()
+        #     # Haz clic en el enlace para enviar otra respuesta
+        #     enlace_enviar_otra_respuesta.click()
 
         # Create a new DataFrame from row 15 onwards
         new_df = df.iloc[14:].drop(columns=["PREVENTA"]).reset_index(drop=False)
@@ -124,24 +140,44 @@ if __name__ == "__main__":
         # print(f"\n\nNew DataFrame shape: {new_df.shape}")
         print(f"\nNew DataFrame head: \n{new_df.head(3)}")
 
-        def extract_element_data(row):
-            serie = row["SERIE"]
-            activo = row["ACTIVO"]
-            modelo = row["MODELO"]
-            cliente = row["CLIENTE"]
-            sap = row["SAP"]
-            direccion = row["DIRECCIÓN"]
+        pause_duration = 7
 
-            return serie, activo, modelo, cliente, sap, direccion
-
-        # Extract data from each row
-        for index, row in new_df.head(10).iterrows():
+        # Using for and iterrows
+        # TODO: Remove head(3) to process all rows
+        for index, row in new_df.head(3).iterrows():
             serie, activo, modelo, cliente, sap, direccion = extract_element_data(row)
-            print(f"\n\nRow {index + 14} data: \nSerie: {serie}\nActivo: {activo}\nModelo: {modelo}\nCliente: {cliente}\nSAP: {sap}\nDirección: {direccion}")
+            print(f"\n\nRow {index + 14} | elements:")
+            print(f"Serie: {serie}")
+            print(f"Activo: {activo}")
+            print(f"Modelo: {modelo}")
+            print(f"Cliente: {cliente}")
+            print(f"SAP: {sap}")
+            print(f"Dirección: {direccion}")
+
+            # TODO: Remove head(3) to process all rows
+            if index != len(new_df.head(3)) - 1:
+                time.sleep(pause_duration)
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Fail with element: {index + 14} | Error: \n{e}")
+        fail_elements = fail_elements.append(
+            {
+                "Serie": serie,
+                "Activo": activo,
+                "Modelo": modelo,
+                "Cliente": cliente,
+                "SAP": sap,
+                "Dirección": direccion,
+            },
+            ignore_index=True,
+        )
+
     finally:
-        # Close the browser at the end (optional)
-        # browser.quit()
-        pass
+        if len(fail_elements) > 0:
+            print("\n\nSome elements were not sent.")
+            print(f"\nFailed elements: {fail_elements}")
+            fail_elements.to_excel("failed_elements.xlsx", index=False)
+        else:
+            print("\n\nAll elements were successfully sent.")
+            # browser.quit()
+            # print("\nBrowser closed.")
