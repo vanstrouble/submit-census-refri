@@ -1,4 +1,5 @@
 import os
+import time
 import pandas as pd
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -7,7 +8,6 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import time
 
 
 def extract_element_data(row):
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     )
 
     # print(f"Excel table shape: {df.shape}")
-    # print(f"Table head: \n{df.head(3)} \n\nTable tail: \n{df.tail(3)}")
+    # print(f"Table head: \n{df.head(1)} \n\nTable tail: \n{df.tail(3)}")
 
     # Get environment variables
     user_agent = os.getenv("USER_AGENT")
@@ -49,102 +49,22 @@ if __name__ == "__main__":
     # Specify the path to the geckodriver
     firefox_service = Service(executable_path=firefox_driver_path)
 
-    # Start the Firefox browser
     try:
-        # browser = webdriver.Firefox(service=firefox_service, options=firefox_options)
-        # browser.get(os.getenv("WEB_URL"))
-
-        # # PREVENTA
-        # checkbox_preventa = WebDriverWait(browser, 10).until(
-        #     EC.element_to_be_clickable((By.XPATH, "//label[.//span[text()='207']]"))
-        # )
-        # checkbox_preventa.click()
-
-        # if 'N2RpBe' in checkbox_preventa.get_attribute('class'):
-        #     print("✅ Checkbox selected successfully!")
-        # else:
-        #     print("❌ Checkbox not selected.")
-
-        # # SERIE
-        # textarea_serie = WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//textarea[@class='KHxj8b tL9Q4c']"))
-        # )
-        # textarea_serie.clear()
-        # textarea_serie.send_keys("TEST SERIE")
-
-        # # ACTIVO
-        # input_activo = WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf']"))
-        # )
-        # input_activo.clear()
-        # input_activo.send_keys("TEST ACTIVO")
-
-        # # MODELO
-        # input_modelo = WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf' and @aria-labelledby='i46 i49']"))
-        # )
-        # input_modelo.clear()
-        # input_modelo.send_keys("TEST MODELO")
-
-        # # CLIENTE
-        # span_cliente = WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'CLIENTE')]"))
-        # )
-        # input_cliente = browser.find_element(By.XPATH, "//span[contains(text(), 'CLIENTE')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
-        # input_cliente.clear()
-        # input_cliente.send_keys("TEST CLIENTE")
-
-        # # SAP
-        # span_sap = WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'SAP')]"))
-        # )
-        # input_sap = browser.find_element(By.XPATH, "//span[contains(text(), 'SAP')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
-        # input_sap.clear()
-        # input_sap.send_keys("TEST SAP")
-
-        # # DIRECCIÓN
-        # span_direccion = WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]"))
-        # )
-        # input_direccion = browser.find_element(By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']")
-        # input_direccion.clear()
-        # input_direccion.send_keys("TEST DIRECCIÓN")
-
-        # # Enviar formulario
-        # button_enviar = WebDriverWait(browser, 15).until(
-        #     EC.element_to_be_clickable((By.XPATH, "//div[@role='button' and @aria-label='Submit']"))
-        # )
-        # button_enviar.click()
-
-        # Verifica que se haya cargado la página de confirmación
-        # WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Se registró tu respuesta.')]"))
-        # )
-
-        # # Verifica la presencia del enlace "Enviar otra respuesta"
-        # enlace_enviar_otra_respuesta = WebDriverWait(browser, 15).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//a[contains(text(), 'Enviar otra respuesta')]"))
-        # )
-
-        # # Si ambos elementos están presentes, imprime un mensaje de éxito
-        # if enlace_enviar_otra_respuesta:
-        #     formulario_enviado_count += 1  # Incrementa el contador
-        #     print(f"Formulario enviado exitosamente. Total de formularios enviados: {formulario_enviado_count}")
-
-        #     # Haz clic en el enlace para enviar otra respuesta
-        #     enlace_enviar_otra_respuesta.click()
+        # Start the Firefox browser
+        browser = webdriver.Firefox(service=firefox_service, options=firefox_options)
+        browser.get(os.getenv("WEB_URL"))
 
         # Create a new DataFrame from row 15 onwards
         new_df = df.iloc[14:].drop(columns=["PREVENTA"]).reset_index(drop=False)
 
         # print(f"\n\nNew DataFrame shape: {new_df.shape}")
-        print(f"\nNew DataFrame head: \n{new_df.head(3)}")
+        print(f"\nNew DataFrame head: \n{new_df.head(1)}")
 
         pause_duration = 7
 
         # Using for and iterrows
-        # TODO: Remove head(3) to process all rows
-        for index, row in new_df.head(3).iterrows():
+        # TODO: Remove head(1) to process all rows
+        for index, row in new_df.head(1).iterrows():
             serie, activo, modelo, cliente, sap, direccion = extract_element_data(row)
             print(f"\n\nRow {index + 14} | elements:")
             print(f"Serie: {serie}")
@@ -154,11 +74,108 @@ if __name__ == "__main__":
             print(f"SAP: {sap}")
             print(f"Dirección: {direccion}")
 
-            # TODO: Remove head(3) to process all rows
-            if index != len(new_df.head(3)) - 1:
+            # PREVENTA
+            checkbox_preventa = WebDriverWait(browser, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//label[.//span[text()='207']]"))
+            )
+            checkbox_preventa.click()
+
+            # SERIE
+            textarea_serie = WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//textarea[@class='KHxj8b tL9Q4c']")
+                )
+            )
+            textarea_serie.clear()
+            textarea_serie.send_keys(serie)
+
+            # ACTIVO
+            input_activo = WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//input[@class='whsOnd zHQkBf']")
+                )
+            )
+            input_activo.clear()
+            input_activo.send_keys(activo)
+
+            # MODELO
+            input_modelo = WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located((By.XPATH, "//input[@class='whsOnd zHQkBf' and @aria-labelledby='i46 i49']"))
+            )
+            input_modelo.clear()
+            input_modelo.send_keys(modelo)
+
+            # CLIENTE
+            span_cliente = WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//span[contains(text(), 'CLIENTE')]")
+                )
+            )
+            input_cliente = browser.find_element(
+                By.XPATH,
+                "//span[contains(text(), 'CLIENTE')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']",
+            )
+            input_cliente.clear()
+            input_cliente.send_keys(cliente)
+
+            # SAP
+            span_sap = WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//span[contains(text(), 'SAP')]")
+                )
+            )
+            input_sap = browser.find_element(
+                By.XPATH,
+                "//span[contains(text(), 'SAP')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']",
+            )
+            input_sap.clear()
+            input_sap.send_keys(sap)
+
+            # DIRECCIÓN
+            span_direccion = WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//span[contains(text(), 'DIRECCIÓN')]")
+                )
+            )
+            input_direccion = browser.find_element(
+                By.XPATH,
+                "//span[contains(text(), 'DIRECCIÓN')]/ancestor::div[contains(@class, 'geS5n')]//input[@class='whsOnd zHQkBf']",
+            )
+            input_direccion.clear()
+            input_direccion.send_keys(direccion)
+
+            # Send the form
+            button_enviar = WebDriverWait(browser, 15).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//div[@role='button' and @aria-label='Submit']")
+                )
+            )
+            button_enviar.click()
+
+            # Verify that the confirmation page has loaded
+            WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//div[contains(text(), 'Se registró tu respuesta.')]")
+                )
+            )
+
+            # Send another response
+            enlace_enviar_otra_respuesta = WebDriverWait(browser, 15).until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//a[contains(text(), 'Enviar otra respuesta')]")
+                )
+            )
+            # If both elements are present, print a success message
+            if enlace_enviar_otra_respuesta:
+                print("Formulario enviado exitosamente.")
+            enlace_enviar_otra_respuesta.click()
+
+            # TODO: Remove head(1) to process all rows
+            if index != len(new_df.head(1)) - 1:
                 time.sleep(pause_duration)
 
     except Exception as e:
+        # TODO: Change index + 14 to index + 15 if the 14th row is sent
         print(f"Fail with element: {index + 14} | Error: \n{e}")
         fail_elements = fail_elements.append(
             {
@@ -175,7 +192,7 @@ if __name__ == "__main__":
     finally:
         if len(fail_elements) > 0:
             print("\n\nSome elements were not sent.")
-            print(f"\nFailed elements: {fail_elements}")
+            print(f"\n\nFailed elements: {fail_elements}")
             fail_elements.to_excel("failed_elements.xlsx", index=False)
         else:
             print("\n\nAll elements were successfully sent.")
