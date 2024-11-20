@@ -32,7 +32,7 @@ if __name__ == "__main__":
     )
 
     # print(f"Excel table shape: {df.shape}")
-    # print(f"Table head: \n{df.head(1)} \n\nTable tail: \n{df.tail(3)}")
+    # print(f"Table head: \n{df} \n\nTable tail: \n{df.tail(3)}")
 
     # Get environment variables
     user_agent = os.getenv("USER_AGENT")
@@ -54,19 +54,23 @@ if __name__ == "__main__":
         browser = webdriver.Firefox(service=firefox_service, options=firefox_options)
         browser.get(os.getenv("WEB_URL"))
 
-        # Create a new DataFrame from row 15 onwards
-        new_df = df.iloc[14:].drop(columns=["PREVENTA"]).reset_index(drop=False)
+        # Create a new DataFrame from n complete elements
+        n_complete_elements = 15
+        new_df = (
+            df.iloc[n_complete_elements:]
+            .drop(columns=["PREVENTA"])
+            .reset_index(drop=False)
+        )
 
         # print(f"\n\nNew DataFrame shape: {new_df.shape}")
         print(f"\nNew DataFrame head: \n{new_df.head(1)}")
+        print(f"\nNew DataFrame head: \n{new_df.tail(1)}")
 
         pause_duration = 7
 
-        # Using for and iterrows
-        # TODO: Remove head(1) to process all rows
-        for index, row in new_df.head(1).iterrows():
+        for index, row in new_df.iterrows():
             serie, activo, modelo, cliente, sap, direccion = extract_element_data(row)
-            print(f"\n\nRow {index + 14} | elements:")
+            print(f"\n\nRow {index + n_complete_elements + 1} | elements:")
             print(f"Serie: {serie}")
             print(f"Activo: {activo}")
             print(f"Modelo: {modelo}")
@@ -159,7 +163,7 @@ if __name__ == "__main__":
                 )
             )
 
-            # Send another response
+            # View the link to send another response
             enlace_enviar_otra_respuesta = WebDriverWait(browser, 15).until(
                 EC.visibility_of_element_located(
                     (By.XPATH, "//a[contains(text(), 'Enviar otra respuesta')]")
@@ -167,16 +171,17 @@ if __name__ == "__main__":
             )
             # If both elements are present, print a success message
             if enlace_enviar_otra_respuesta:
-                print("Formulario enviado exitosamente.")
-            enlace_enviar_otra_respuesta.click()
+                print("\nForm successfully submitted.")
 
-            # TODO: Remove head(1) to process all rows
-            if index != len(new_df.head(1)) - 1:
+            if index != len(new_df) - 1:
                 time.sleep(pause_duration)
+                # Click the link to send another response
+                enlace_enviar_otra_respuesta.click()
+
+            print(f"{index + n_complete_elements + 1} of {len(df)} elements sent.")
 
     except Exception as e:
-        # TODO: Change index + 14 to index + 15 if the 14th row is sent
-        print(f"Fail with element: {index + 14} | Error: \n{e}")
+        print(f"Fail with element: {index + n_complete_elements + 1} | Error: \n{e}")
         fail_elements = fail_elements.append(
             {
                 "Serie": serie,
