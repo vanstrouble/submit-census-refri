@@ -100,6 +100,24 @@ if __name__ == "__main__":
 
         # button_enviar.click()
 
+        # Verifica que se haya cargado la página de confirmación
+        WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Se registró tu respuesta.')]"))
+        )
+
+        # Verifica la presencia del enlace "Enviar otra respuesta"
+        enlace_enviar_otra_respuesta = WebDriverWait(browser, 15).until(
+            EC.visibility_of_element_located((By.XPATH, "//a[contains(text(), 'Enviar otra respuesta')]"))
+        )
+
+        # Si ambos elementos están presentes, imprime un mensaje de éxito
+        if enlace_enviar_otra_respuesta:
+            formulario_enviado_count += 1  # Incrementa el contador
+            print(f"Formulario enviado exitosamente. Total de formularios enviados: {formulario_enviado_count}")
+
+            # Haz clic en el enlace para enviar otra respuesta
+            enlace_enviar_otra_respuesta.click()
+
         # Create a new DataFrame from row 15 onwards
         new_df = df.iloc[14:].drop(columns=["PREVENTA"]).reset_index(drop=False)
 
